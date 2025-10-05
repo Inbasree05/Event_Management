@@ -1,0 +1,108 @@
+.service-page {
+  padding: 40px;
+  text-align: center;
+  background-color: #fdf8f4;
+}
+
+.hero {
+  margin-bottom: 20px;
+}
+
+.locations {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 20px 0 10px;
+}
+
+.loc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #eee;
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px 6px 6px;
+}
+
+.loc-chip img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.loc-chip.active,
+.loc-chip:hover {
+  border-color: #ff6b81;
+  box-shadow: 0 0 0 3px rgba(255,107,129,0.15);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin: 10px 0 30px;
+}
+
+.gallery-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-card .badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.card-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 250px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: #ff6b81;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.card button:hover {
+  background: #e05266;
+}

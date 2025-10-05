@@ -1,0 +1,37 @@
+.content {
+  text-align: center;
+  padding: 40px;
+ 
+  
+}
+
+.content h2 {
+  font-size: 28px;
+  color: hsl(0, 19%, 95%);
+}
+
+.content p {
+  margin-top: 10px;
+  font-size: 16px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  color:white;
+}
+
+.explore-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #f08080;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+
+
+
+
+

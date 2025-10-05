@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('/back1.jpg'); 
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+/*body{
+    margin:0;
+    padding:0;
+    background-color:rgb(129, 9, 208)
+}*/
+.carousel .slide img {
+  height: 400px;
+  object-fit: cover;
+}
+
+.legend {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  font-size: 16px;
+}
