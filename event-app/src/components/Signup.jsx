@@ -26,7 +26,7 @@ const Signup = () => {
   }
 
   try {
-    const { data } = await Axios.post("http://localhost:3000/auth/signup", {
+    const { data } = await Axios.post(`${API_BASE_URL}/auth/signup`, {
       username,
       email,
       password,
