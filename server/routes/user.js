@@ -106,7 +106,7 @@ UserRouter.post("/google-login", async (req, res) => {
       user = new UserModel({
         username: name,
         email,
-        password: "google-auth", // dummy placeholder
+        password: "google-auth", 
         role: "user",
         lastActive: now,
         createdAt: now

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 import Axios from "axios";
 import { API_BASE_URL } from "../config";
-import { useCart } from "../contexts/CartContext";
-import { useNavigate } from "react-router-dom";
 import "./Mehndi.css";
 
 import gobiImg from "../assets/Gobi-mehandhi.jpeg";
@@ -34,19 +34,50 @@ const locations = [
   { name: "Tirupur", key: "tirupur", img: tirupurImg },
 ];
 
+// Mock mehndi artist data - professional mehndi artists
+const localMehndiArtists = {
+  'artist-1': {
+    name: 'Fatima Sheikh',
+    location: 'Chennai',      
+    experience: '10 years',    
+    specialty: ['Bridal Mehndi', 'Arabic Mehndi', 'Rajasthani Mehndi'],
+    about: 'Fatima is a renowned mehndi artist with 10 years of experience in traditional bridal mehndi designs.',
+    rating: 4.9,
+    reviewCount: 156
+  },
+  'artist-2': {
+    name: 'Priya Nair',
+    location: 'Mumbai',        
+    experience: '7 years',    
+    specialty: ['Modern Mehndi', 'Jewellery Mehndi', 'Indo-Arabic'],
+    about: 'Priya specializes in contemporary mehndi designs with a modern twist on traditional patterns.',
+    rating: 4.7,
+    reviewCount: 98
+  },
+  'artist-3': {
+    name: 'Ayesha Khan',
+    location: 'Bangalore',        
+    experience: '12 years',    
+    specialty: ['Traditional Bridal', 'Glitter Mehndi', 'Tattoo Style'],
+    about: 'Ayesha is an expert in traditional bridal mehndi with exquisite detailing and modern techniques.',
+    rating: 4.8,
+    reviewCount: 134
+  }
+};
+
 const mehndiDesigns = [
-  { id: 1, name: "Gobi Mehndi Design 1", location: "gobi", img: gobiImg1, price: 5000 },
-  { id: 2, name: "Gobi Mehndi Design 2", location: "gobi", img: gobiImg2, price: 6000 },
-  { id: 3, name: "Gobi Mehndi Design 3", location: "gobi", img: gobiImg3, price: 8000 },
-  { id: 4, name: "Erode Mehndi Design 1", location: "erode", img: erodeImg1, price: 8500 },
-  { id: 5, name: "Erode Mehndi Design 2", location: "erode", img: erodeImg2, price: 7000 },
-  { id: 6, name: "Erode Mehndi Design 3", location: "erode", img: erodeImg3, price: 6000 },
-  { id: 7, name: "Salem Mehndi Design 1", location: "salem", img: salemImg1, price: 4000 },
-  { id: 8, name: "Salem Mehndi Design 2", location: "salem", img: salemImg2, price: 9000 },
-  { id: 9, name: "Chennai Mehndi Design 1", location: "chennai", img: chennaiImg1, price: 8000 },
-  { id: 10, name: "Chennai Mehndi Design 2", location: "chennai", img: chennaiImg2, price: 7000 },
-  { id: 11, name: "Tirupur Mehndi Design 1", location: "tirupur", img: tirupurImg1, price: 9000 },
-  { id: 12, name: "Tirupur Mehndi Design 2", location: "tirupur", img: tirupurImg2, price: 6000 },
+  { id: 1, name: "Gobi Mehndi Design 1", location: "gobi", img: gobiImg1, price: 5000, artistId: 'artist-1' },
+  { id: 2, name: "Gobi Mehndi Design 2", location: "gobi", img: gobiImg2, price: 6000, artistId: 'artist-2' },
+  { id: 3, name: "Gobi Mehndi Design 3", location: "gobi", img: gobiImg3, price: 8000, artistId: 'artist-3' },
+  { id: 4, name: "Erode Mehndi Design 1", location: "erode", img: erodeImg1, price: 8500, artistId: 'artist-1' },
+  { id: 5, name: "Erode Mehndi Design 2", location: "erode", img: erodeImg2, price: 7000, artistId: 'artist-2' },
+  { id: 6, name: "Erode Mehndi Design 3", location: "erode", img: erodeImg3, price: 6000, artistId: 'artist-3' },
+  { id: 7, name: "Salem Mehndi Design 1", location: "salem", img: salemImg1, price: 4000, artistId: 'artist-1' },
+  { id: 8, name: "Salem Mehndi Design 2", location: "salem", img: salemImg2, price: 9000, artistId: 'artist-2' },
+  { id: 9, name: "Chennai Mehndi Design 1", location: "chennai", img: chennaiImg1, price: 8000, artistId: 'artist-3' },
+  { id: 10, name: "Chennai Mehndi Design 2", location: "chennai", img: chennaiImg2, price: 7000, artistId: 'artist-1' },
+  { id: 11, name: "Tirupur Mehndi Design 1", location: "tirupur", img: tirupurImg1, price: 9000, artistId: 'artist-2' },
+  { id: 12, name: "Tirupur Mehndi Design 2", location: "tirupur", img: tirupurImg2, price: 6000, artistId: 'artist-3' },
 ];
 
 export default function Mehndi() {
@@ -55,7 +86,33 @@ export default function Mehndi() {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [notification, setNotification] = useState({ show: false, message: "" });
   const [products, setProducts] = useState([]);
+  const [artists, setArtists] = useState(localMehndiArtists);
   const [loading, setLoading] = useState(true);
+
+  // Fetch artists data
+  useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        const response = await Axios.get(`${API_BASE_URL}/api/artists`);
+        if (response.data.success) {
+          // Convert array to object with _id as key for easy lookup
+          const backendArtistsObj = {};
+          response.data.data.forEach(artist => {
+            backendArtistsObj[artist._id] = artist;
+          });
+          // Merge with local artists, giving priority to backend data for matching IDs
+          const mergedArtists = { ...localMehndiArtists, ...backendArtistsObj };
+          setArtists(mergedArtists);
+        }
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+        // If API fails, use local artists data
+        setArtists(localMehndiArtists);
+      }
+    };
+
+    fetchArtists();
+  }, []);
 
   // Fetch products from API (category=mehndi)
   useEffect(() => {
@@ -166,43 +223,99 @@ export default function Mehndi() {
 
       {/* Mehndi Designs Grid */}
       <div className="mehndi-container">
-        {filteredDesigns.map((design) => (
-          <div key={design.id} className="mehndi-card">
-            <img 
-              src={design.img} 
-              alt={design.name}
-              onClick={() => handleViewDetails(design)}
-            />
-            <div className="mehndi-card-content">
-              <h3>{design.name}</h3>
-              <p>{design.location.charAt(0).toUpperCase() + design.location.slice(1)}</p>
-              <div className="mehndi-card-actions">
-                <p className="price">₹{design.price.toLocaleString()}</p>
-                <div className="action-buttons">
-                  <button 
-                    className="action-btn add-to-cart"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(design);
-                    }}
-                  >
-                    Add to Cart
-                  </button>
-                  <button 
-                    className="action-btn book-now"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleAddToCart(design);
-                      navigate('/cart');
-                    }}
-                  >
-                    Book Now
-                  </button>
+        {filteredDesigns.map((design) => {
+          const artist = artists[design.artistId];
+          return (
+            <div key={design.id} className="mehndi-card">
+              <img
+                src={design.img}
+                alt={design.name}
+                onClick={() => handleViewDetails(design)}
+              />
+              <div className="mehndi-card-content">
+                <h3>{design.name}</h3>
+                <p>{design.location.charAt(0).toUpperCase() + design.location.slice(1)}</p>
+                
+                {/* Artist Information */}
+                <Link
+                  to={`/artist/${design.artistId}`}
+                  state={{
+                    artistData: {
+                      ...artist,
+                      portfolioImages: [design.img],
+                      price: `₹${design.price.toLocaleString()}`,
+                      location: design.location
+                    }
+                  }}
+                  className="artist-info-link"
+                >
+                  <div className="artist-info">
+                    {artist ? (
+                      <>
+                        <div className="artist-header">
+                          <i className="fas fa-user-circle artist-icon"></i>
+                          <div>
+                            <p className="artist-name">{artist.name || 'Professional Artist'}</p>
+                            {artist.experience && <p className="artist-experience">⭐ {artist.experience} experience</p>}
+                          </div>
+                        </div>
+                        {artist.specialty && Array.isArray(artist.specialty) && artist.specialty.length > 0 && (
+                          <p className="artist-specialty">
+                            <i className="fas fa-star"></i> {artist.specialty.join(' • ')}
+                          </p>
+                        )}
+                        {artist.rating && (
+                          <div className="artist-rating">
+                            {[...Array(5)].map((_, i) => (
+                              <i
+                                key={i}
+                                className={`fas fa-star ${i < Math.floor(artist.rating) ? 'filled' : ''}${i === Math.floor(artist.rating) && artist.rating % 1 > 0 ? ' half' : ''}`}
+                              ></i>
+                            ))}
+                            <span className="rating-text">{artist.rating} ({artist.reviewCount || 0} reviews)</span>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="artist-default">
+                        <i className="fas fa-user-circle"></i>
+                        <span>View Artist Profile</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="view-profile-link">
+                    View Full Profile <i className="fas fa-arrow-right"></i>
+                  </div>
+                </Link>
+                
+                <div className="mehndi-card-actions">
+                  <p className="price">₹{design.price.toLocaleString()}</p>
+                  <div className="action-buttons">
+                    <button
+                      className="action-btn add-to-cart"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(design);
+                      }}
+                    >
+                      Add to Cart
+                    </button>
+                    <button
+                      className="action-btn book-now"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(design);
+                        navigate('/cart');
+                      }}
+                    >
+                      Book Now
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

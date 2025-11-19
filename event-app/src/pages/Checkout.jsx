@@ -12,6 +12,7 @@ const Checkout = () => {
     name: '',
     email: '',
     phone: '',
+    address: '',     // ✅ ADDED
     date: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,7 +55,6 @@ const Checkout = () => {
       });
       
       if (response.status === 201) {
-        // Clear cart and redirect to success page
         clearCart();
         navigate('/booking-success', { 
           state: { 
@@ -95,7 +95,7 @@ const Checkout = () => {
         <form onSubmit={handleSubmit} className="booking-form">
           <h3>Your Details</h3>
           {error && <div className="error-message">{error}</div>}
-          
+
           <div className="form-group">
             <label>Full Name</label>
             <input
@@ -107,7 +107,7 @@ const Checkout = () => {
               placeholder="Enter your full name"
             />
           </div>
-          
+
           <div className="form-group">
             <label>Email</label>
             <input
@@ -119,7 +119,7 @@ const Checkout = () => {
               placeholder="Enter your email"
             />
           </div>
-          
+
           <div className="form-group">
             <label>Phone Number</label>
             <input
@@ -131,7 +131,20 @@ const Checkout = () => {
               placeholder="Enter your phone number"
             />
           </div>
-          
+
+          {/* ✅ NEW ADDRESS FIELD */}
+          <div className="form-group">
+            <label>Address</label>
+            <textarea
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              placeholder="Enter your full address"
+              rows="3"
+            ></textarea>
+          </div>
+
           <div className="form-group">
             <label>Event Date</label>
             <input
@@ -143,7 +156,7 @@ const Checkout = () => {
               min={new Date().toISOString().split('T')[0]}
             />
           </div>
-          
+
           <button 
             type="submit" 
             className="submit-booking-btn"

@@ -64,13 +64,16 @@ h2 {
 
 /* Cards Grid */
 .mehndi-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+  padding: 20px;
 }
 
 .mehndi-card {
+  flex: 0 0 calc(33.33% - 20px); /* Exactly 3 per row */
+  max-width: calc(33.33% - 20px);
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -91,6 +94,7 @@ h2 {
   object-fit: contain;
   background: #f8f8f8;
   padding: 10px;
+  box-sizing: border-box;
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -102,12 +106,12 @@ h2 {
 .mehndi-card h3 {
   margin: 0 0 8px;
   font-size: 16px;
-  color: #333;
   font-weight: 600;
+  color: #333;
 }
 
 .mehndi-card p {
-  margin: 4px 0;
+  margin: 8px 0 5px;
   font-size: 14px;
   color: #666;
 }
@@ -184,28 +188,26 @@ h2 {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .mehndi-container {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 1200px) {
+  .mehndi-card {
+    flex: 0 0 calc(33.33% - 20px); /* Still 3 per row */
+    max-width: calc(33.33% - 20px);
   }
 }
 
-@media (max-width: 768px) {
-  .mehndi-container {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-  
-  .mehndi-card img {
-    height: 160px;
+@media (max-width: 900px) {
+  .mehndi-card {
+    flex: 0 0 calc(50% - 20px); /* 2 per row */
+    max-width: calc(50% - 20px);
   }
 }
 
-@media (max-width: 480px) {
-  .mehndi-container {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .mehndi-card {
+    flex: 0 0 100%; /* 1 per row */
+    max-width: 100%;
   }
-  
+
   .location {
     font-size: 13px;
     padding: 8px 12px;

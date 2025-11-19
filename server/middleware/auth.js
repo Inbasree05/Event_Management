@@ -1,6 +1,40 @@
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/User.js';
 
+// Middleware to verify admin role
+export const verifyAdmin = (req, res, next) => {
+  console.log('=== Verify Admin Middleware ===');
+  
+  // First verify the user is authenticated
+  auth(req, res, () => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({
+          success: false,
+          message: 'Authentication required'
+        });
+      }
+      
+      // Check if user is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({
+          success: false,
+          message: 'Admin access required'
+        });
+      }
+      
+      console.log('Admin access granted for user:', req.user.email);
+      next();
+    } catch (error) {
+      console.error('Admin verification error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Server error during admin verification'
+      });
+    }
+  });
+};
+
 export const auth = async (req, res, next) => {
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
@@ -57,5 +91,8 @@ export const auth = async (req, res, next) => {
   }
 };
 
-// Add named export for auth middleware
-export default { auth };
+// Export all middleware
+export default { 
+  auth, 
+  verifyAdmin 
+};

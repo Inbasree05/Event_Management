@@ -9,6 +9,7 @@ import { router as ReviewRouter } from "./routes/review.js";
 import path from "path";
 import { AdminRouter } from "./routes/admin.js";
 import { ProductsRouter } from "./routes/products.js";
+import ArtistRouter from "./routes/artist.js";
 dotenv.config();
 const app = express();
 
@@ -38,6 +39,7 @@ app.use("/api/reviews", ReviewRouter); // Mount review routes under /api/reviews
 app.use("/booking", BookingRouter);
 app.use("/admin", AdminRouter);
 app.use("/products", ProductsRouter);
+app.use("/api/artists", ArtistRouter); // Mount artist routes under /api/artists
 
 // Error handling middleware
 app.use((err, req, res, next) => {

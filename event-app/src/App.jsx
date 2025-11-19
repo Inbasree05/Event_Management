@@ -21,6 +21,7 @@ import Footer from "./components/Footer";
 import Makeup from "./components/Makeup";
 import Photo from "./components/Photo";
 import Venue from "./components/Venue";
+import ArtistDetails from "./pages/ArtistDetails";
 import './App.css';
 
 // Protected Route component
@@ -71,6 +72,7 @@ function App() {
         <Route path="/makeup" element={<Makeup />} />
         <Route path="/photo" element={<Photo />} />
         <Route path="/venue" element={<Venue />} />
+        <Route path="/artist/:id" element={<ArtistDetails />} />
         {/* Cart & Checkout */}
         <Route path="/cart" element={
           <ProtectedRoute>

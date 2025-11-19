@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../contexts/CartContext";
+import { Link } from 'react-router-dom';
 import "./Makeup.css";   
 import { API_BASE_URL } from "../config";
+import axios from 'axios';
 
 // Import makeup images
 import gobi1 from "../assets/g-b-1.jpeg";
@@ -31,22 +33,117 @@ const locations = [
   { name: "Tirupur", key: "tirupur", img: tirupur1 },
 ];
 
+// Mock artist data - this would ideally come from your backend
+const localArtists = {
+  'john-doe': {
+    name: 'Kavita Verma',
+    location: 'Chennai',      
+    experience: '8 years',    
+    specialty: ['Bridal Makeup', 'Traditional Makeup', 'HD Makeup'],
+    about: 'Kavita is a professional makeup artist with over 8 years of experience in bridal makeup. She specializes in traditional and HD bridal looks.',
+    rating: 4.8,
+    reviewCount: 127
+  },
+  'jane-smith': {
+    name: 'Anjali Reddy',
+    location: 'Erode',        
+    experience: '5 years',    
+    specialty: ['Party Makeup', 'Bridal Makeup', 'Airbrush Makeup'],
+    about: 'Anjali is known for her creative and elegant makeup styles. She excels in both contemporary and traditional looks.',
+    rating: 4.6,
+    reviewCount: 89
+  }
+};
+
 const makeupDesigns = [
-  { id: 1, name: "Gobi Bridal Makeup 1", location: "gobi", img: gobi1, price: 5000 },
-  { id: 2, name: "Gobi Bridal Makeup 2", location: "gobi", img: gobi2, price: 6000 },
-  { id: 3, name: "Gobi Bridal Makeup 3", location: "gobi", img: gobi3, price: 7000 },
-
-  { id: 4, name: "Erode Bridal Makeup 1", location: "erode", img: erode1, price: 6500 },
-  { id: 5, name: "Erode Bridal Makeup 2", location: "erode", img: erode2, price: 7500 },
-
-  { id: 6, name: "Chennai Bridal Makeup 1", location: "chennai", img: chennai1, price: 8000 },
-  { id: 7, name: "Chennai Bridal Makeup 2", location: "chennai", img: chennai2, price: 9000 },
-
-  { id: 8, name: "Salem Bridal Makeup 1", location: "salem", img: salem1, price: 5500 },
-  { id: 9, name: "Salem Bridal Makeup 2", location: "salem", img: salem2, price: 6500 },
-
-  { id: 10, name: "Tirupur Bridal Makeup 1", location: "tirupur", img: tirupur1, price: 7000 },
-  { id: 11, name: "Tirupur Bridal Makeup 2", location: "tirupur", img: tirupur2, price: 8000 },
+  { 
+    id: 1, 
+    name: "Gobi Bridal Makeup 1", 
+    location: "gobi", 
+    img: gobi1, 
+    price: 5000,
+    artistId: 'john-doe'
+  },
+  { 
+    id: 2, 
+    name: "Gobi Bridal Makeup 2", 
+    location: "gobi", 
+    img: gobi2, 
+    price: 6000,
+    artistId: 'jane-smith'
+  },
+  { 
+    id: 3, 
+    name: "Gobi Bridal Makeup 3", 
+    location: "gobi", 
+    img: gobi3, 
+    price: 7000,
+    artistId: 'john-doe'
+  },
+  { 
+    id: 4, 
+    name: "Erode Bridal Makeup 1", 
+    location: "erode", 
+    img: erode1, 
+    price: 6500,
+    artistId: 'jane-smith'
+  },
+  { 
+    id: 5, 
+    name: "Erode Bridal Makeup 2", 
+    location: "erode", 
+    img: erode2, 
+    price: 7500,
+    artistId: 'john-doe'
+  },
+  { 
+    id: 6, 
+    name: "Chennai Bridal Makeup 1", 
+    location: "chennai", 
+    img: chennai1, 
+    price: 8000,
+    artistId: 'jane-smith'
+  },
+  { 
+    id: 7, 
+    name: "Chennai Bridal Makeup 2", 
+    location: "chennai", 
+    img: chennai2, 
+    price: 9000,
+    artistId: 'john-doe'
+  },
+  { 
+    id: 8, 
+    name: "Salem Bridal Makeup 1", 
+    location: "salem", 
+    img: salem1, 
+    price: 5500,
+    artistId: 'jane-smith'
+  },
+  { 
+    id: 9, 
+    name: "Salem Bridal Makeup 2", 
+    location: "salem", 
+    img: salem2, 
+    price: 6500,
+    artistId: 'john-doe'
+  },
+  { 
+    id: 10, 
+    name: "Tirupur Bridal Makeup 1", 
+    location: "tirupur", 
+    img: tirupur1, 
+    price: 7000,
+    artistId: 'jane-smith'
+  },
+  { 
+    id: 11, 
+    name: "Tirupur Bridal Makeup 2", 
+    location: "tirupur", 
+    img: tirupur2, 
+    price: 8000,
+    artistId: 'john-doe'
+  },
 ];
 
 export default function Makeup() {
@@ -54,8 +151,37 @@ export default function Makeup() {
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [successMsg, setSuccessMsg] = useState("");
   const [backendItems, setBackendItems] = useState([]);
+  const [artists, setArtists] = useState(localArtists);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Fetch artists data
+  useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${API_BASE_URL}/api/artists`);
+        if (response.data.success) {
+          // Convert array to object with _id as key for easy lookup
+          const backendArtistsObj = {};
+          response.data.data.forEach(artist => {
+            backendArtistsObj[artist._id] = artist;
+          });
+          // Merge with local artists, giving priority to backend data for matching IDs
+          const mergedArtists = { ...localArtists, ...backendArtistsObj };
+          setArtists(mergedArtists);
+        }
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+        // If API fails, use local artists data
+        setArtists(localArtists);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtists();
+  }, []);
 
   // Fetch admin-created products for Bridal Makeup & Hair
   useEffect(() => {
@@ -161,14 +287,68 @@ export default function Makeup() {
       {successMsg && <div className="success-message">{successMsg}</div>}
 
       <div className="makeup-container">
-        {filteredDesigns.map((item) => (
-          <div key={item.id} className="makeup-card">
-            <img src={item.img} alt={item.location} />
-            <p>Location: {item.location}</p>
-            <p>Price: ₹{item.price.toLocaleString()}</p>
-            <button onClick={() => handleAddToCart(item)}>Add to cart</button>
-          </div>
-        ))}
+        {filteredDesigns.map((item) => {
+          const artist = artists[item.artistId];
+          return (
+            <div key={item.id} className="makeup-card">
+              <img src={item.img} alt={item.location} />
+              <h3>{item.name}</h3>
+              <p>Location: {item.location}</p>
+              <p>Price: ₹{item.price.toLocaleString()}</p>
+              <Link 
+                to={`/artist/${item.artistId}`} 
+                state={{ 
+                  artistData: {
+                    ...artist,
+                    portfolioImages: [item.img], // Include the current makeup image in the portfolio
+                    price: `₹${item.price.toLocaleString()}`,
+                    location: item.location
+                  } 
+                }} 
+                className="artist-info-link"
+              >
+                <div className="artist-info">
+                  {artist ? (
+                    <>
+                      <div className="artist-header">
+                        <i className="fas fa-user-circle artist-icon"></i>
+                        <div>
+                          <p className="artist-name">{artist.name || 'Professional Artist'}</p>
+                          {artist.experience && <p className="artist-experience">⭐ {artist.experience} experience</p>}
+                        </div>
+                      </div>
+                      {artist.specialty && Array.isArray(artist.specialty) && artist.specialty.length > 0 && (
+                        <p className="artist-specialty">
+                          <i className="fas fa-star"></i> {artist.specialty.join(' • ')}
+                        </p>
+                      )}
+                      {artist.rating && (
+                        <div className="artist-rating">
+                          {[...Array(5)].map((_, i) => (
+                            <i 
+                              key={i} 
+                              className={`fas fa-star ${i < Math.floor(artist.rating) ? 'filled' : ''}${i === Math.floor(artist.rating) && artist.rating % 1 > 0 ? ' half' : ''}`}
+                            ></i>
+                          ))}
+                          <span className="rating-text">{artist.rating} ({artist.reviewCount || 0} reviews)</span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="artist-default">
+                      <i className="fas fa-user-circle"></i>
+                      <span>View Artist Profile</span>
+                    </div>
+                  )}
+                </div>
+                <div className="view-profile-link">
+                  View Full Profile <i className="fas fa-arrow-right"></i>
+                </div>
+              </Link>
+              <button onClick={() => handleAddToCart(item)}>Add to cart</button>
+            </div>
+          );
+        })}
       </div>
 
       {/* Backend Products: Bridal Makeup & Hair (rendered after static to appear at bottom) */}
