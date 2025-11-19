@@ -61,13 +61,13 @@ const ReviewModal = ({ isOpen, onClose, vendorId, vendorName }) => {
         <h3>Reviews for {vendorName}</h3>
         
         <div className="tabs">
-          <button
+          <button 
             className={`tab ${!showReviews ? 'active' : ''}`}
             onClick={() => setShowReviews(false)}
           >
             Write a Review
           </button>
-          <button
+          <button 
             className={`tab ${showReviews ? 'active' : ''}`}
             onClick={() => {
               if (!showReviews) fetchReviews();
@@ -81,8 +81,8 @@ const ReviewModal = ({ isOpen, onClose, vendorId, vendorName }) => {
           <form onSubmit={handleSubmit} className="review-form">
             <div className="rating-input">
               <label>Rating:</label>
-              <select
-                value={rating}
+              <select 
+                value={rating} 
                 onChange={(e) => setRating(Number(e.target.value))}
                 disabled={isLoading}
               >
