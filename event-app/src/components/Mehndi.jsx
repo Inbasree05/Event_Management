@@ -14,7 +14,7 @@ import defaultImg from "../assets/mehandhi.jpeg";
 
 import gobiImg1 from "../assets/Gobi-mehandhi.jpeg";
 import gobiImg2 from "../assets/Gobi-m-2.jpeg";
-import gobiImg3 from "../assets/Gobi-m-3.jpeg";
+import gobiImg3 from "../assets/gobi-m-3.jpeg";
 import erodeImg1 from "../assets/e-m-1.jpeg";
 import erodeImg2 from "../assets/e-m-2.jpeg";
 import erodeImg3 from "../assets/e-m-3.jpeg";
