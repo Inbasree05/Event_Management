@@ -1,13 +1,13 @@
-import express from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import crypto from "crypto";
-import { UserModel } from "../models/User.js";
-import { PasswordResetModel } from "../models/PasswordReset.js";
-import { generateOTP, sendOTPEmail } from "../utils/emailService.js";
-import { OAuth2Client } from "google-auth-library";
+const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { UserModel } = require("../models/User.js");
+const { PasswordResetModel } = require("../models/PasswordReset.js");
+const { generateOTP, sendOTPEmail } = require("../utils/emailService.js");
+const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-export const UserRouter = express.Router();
+const UserRouter = express.Router();
 
 
 UserRouter.post("/signup", async (req, res) => {
@@ -342,3 +342,5 @@ UserRouter.get("/all-users", async (req, res) => {
     });
   }
 });
+
+module.exports = UserRouter;

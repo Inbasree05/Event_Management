@@ -1,10 +1,10 @@
-import express from "express";
-import { BookingModel } from "../models/Booking.js";
-import { auth } from "../middleware/auth.js";
-import { sendBookingConfirmation, sendOrderConfirmation } from "../utils/emailService.js";
-import { v4 as uuidv4 } from 'uuid';
+const express = require("express");
+const { BookingModel } = require("../models/Booking.js");
+const { auth } = require("../middleware/auth.js");
+const { sendBookingConfirmation, sendOrderConfirmation } = require("../utils/emailService.js");
+const { v4: uuidv4 } = require('uuid');
 
-export const BookingRouter = express.Router();
+const BookingRouter = express.Router();
 
 // GET /booking/my - Get bookings for the authenticated user
 BookingRouter.get("/my", auth, async (req, res) => {
@@ -97,3 +97,5 @@ BookingRouter.post("/", async (req, res) => {
     res.status(500).json({ message: "Failed to save booking", error: err.message });
   }
 });
+
+module.exports = BookingRouter;

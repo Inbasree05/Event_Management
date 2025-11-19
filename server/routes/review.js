@@ -1,9 +1,9 @@
-import express from 'express';
-import cors from 'cors';
-import auth from '../middleware/auth.js';
-import Review from '../models/Review.js';
+const express = require('express');
+const cors = require('cors');
+const auth = require('../middleware/auth.js');
+const Review = require('../models/Review.js');
 
-export const router = express.Router();
+const router = express.Router();
 
 // CORS configuration for review routes
 const corsOptions = {
@@ -221,4 +221,5 @@ router.get('/stats/:vendorId', async (req, res) => {
     res.status(500).json({ success: false, msg: 'Server error' });
   }
 });
-// Export is already done above
+
+module.exports = router;
