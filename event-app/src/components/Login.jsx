@@ -60,17 +60,11 @@ const Login = () => {
         // Navigate to the intended URL or default
         navigate(redirectPath);
       }
-    } catch (err) {
-      console.error('Login error:', {
-        message: err.message,
-        code: err.code,
-        response: err.response?.data,
-        status: err.response?.status,
-        config: {
-          url: err.config?.url,
-          method: err.config?.method
-        }
-      });
+    } catch (error) {
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error message:', error.message);
+      setError(error.response?.data?.message || 'Login failed. Please try again.');
       
       if (err.code === 'ERR_NETWORK') {
         setMessage("❌ Cannot connect to the server. Please make sure the backend server is running.");

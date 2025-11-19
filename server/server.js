@@ -42,7 +42,7 @@ const corsOptions = {
     'http://127.0.0.1:5173',
     // Add your deployed frontend URL here later
     'https://*.vercel.app',
-    'https://event-management-frontend.vercel.app'
+    'https://event-management-pt7gfhifb-inbasrees-projects.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
