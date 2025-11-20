@@ -1,6 +1,6 @@
-import express from 'express';
-import Artist from '../models/Artist.js';
-import { auth, verifyAdmin } from '../middleware/auth.js';
+const express = require('express');
+const { Artist } = require('../models/Artist');
+const { auth, verifyAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -157,4 +157,4 @@ router.delete('/:id', auth, verifyAdmin, async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
