@@ -13,6 +13,7 @@ const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
 const reviewRoutes = require('./routes/review');
 const productsRoutes = require('./routes/products');
+const artistRoutes = require('./routes/artist');
 
 // Initialize Express app
 const app = express();
@@ -71,10 +72,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/products', productsRoutes);
+app.use('/api/artists', artistRoutes);
 
 // Frontend routes (without /api prefix to match existing frontend calls)
 app.use('/products', productsRoutes);
 app.use('/auth', userRoutes);
+app.use('/booking', bookingRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
