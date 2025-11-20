@@ -12,6 +12,7 @@ dotenv.config();
 const userRoutes = require('./routes/user');
 const bookingRoutes = require('./routes/booking');
 const reviewRoutes = require('./routes/review');
+const productsRoutes = require('./routes/products');
 
 // Initialize Express app
 const app = express();
@@ -65,12 +66,14 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('MongoDB connected successfully'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Routes
+// API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/products', productsRoutes);
 
-// Add auth routes to match frontend
+// Frontend routes (without /api prefix to match existing frontend calls)
+app.use('/products', productsRoutes);
 app.use('/auth', userRoutes);
 
 // Error handling middleware
