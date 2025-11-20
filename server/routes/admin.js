@@ -1,10 +1,10 @@
-import express from 'express';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { auth } from '../middleware/auth.js';
-import { ProductModel } from '../models/Product.js';
-import { BookingModel } from '../models/Booking.js';
+const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { auth } = require('../middleware/auth');
+const Product = require('../models/Product');
+const Booking = require('../models/Booking');
 
 const router = express.Router();
 
@@ -37,7 +37,7 @@ function requireAdmin(req, res, next) {
 // GET /admin/products - list products
 router.get('/products', auth, requireAdmin, async (req, res) => {
   try {
-    const products = await ProductModel.find({}).sort({ createdAt: -1 });
+    const products = await Product.find({}).sort({ createdAt: -1 });
     res.json({ products });
   } catch (err) {
     console.error('Error fetching products:', err);
@@ -55,7 +55,7 @@ router.post('/products', auth, requireAdmin, upload.single('image'), async (req,
 
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
 
-    const product = new ProductModel({
+    const product = new Product({
       name,
       description,
       price: Number(price),
@@ -67,18 +67,19 @@ router.post('/products', auth, requireAdmin, upload.single('image'), async (req,
     res.status(201).json({ status: true, product, message: 'Product created successfully' });
   } catch (err) {
     console.error('Error creating product:', err);
-    res.status(500).json({ status: false, message: 'Failed to create product' });
+    res.status(500).json({ status: false, message: 'Failed to create product', error: err.message });
   }
 });
 
 // GET /admin/products/:id - fetch single product
 router.get('/products/:id', auth, requireAdmin, async (req, res) => {
   try {
-    const product = await ProductModel.findById(req.params.id);
+    const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ status: false, message: 'Product not found' });
     res.json({ status: true, product });
   } catch (err) {
     console.error('Error fetching product by id:', err);
+    res.status(500).json({ status: false, message: 'Failed to fetch product', error: err.message });
     res.status(500).json({ status: false, message: 'Failed to fetch product' });
   }
 });

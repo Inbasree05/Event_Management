@@ -14,6 +14,7 @@ const bookingRoutes = require('./routes/booking');
 const reviewRoutes = require('./routes/review');
 const productsRoutes = require('./routes/products');
 const artistRoutes = require('./routes/artist');
+const adminRoutes = require('./routes/admin');
 
 // Initialize Express app
 const app = express();
@@ -78,6 +79,9 @@ app.use('/api/artists', artistRoutes);
 app.use('/products', productsRoutes);
 app.use('/auth', userRoutes);
 app.use('/booking', bookingRoutes);
+
+// Admin routes
+app.use('/admin', adminRoutes);
 
 // Root route
 app.get('/', (req, res) => {
