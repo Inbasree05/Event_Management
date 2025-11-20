@@ -1,57 +1,74 @@
 const express = require("express");
-const { BookingModel } = require("../models/Booking.js");
-const { auth } = require("../middleware/auth.js");
-const { sendBookingConfirmation, sendOrderConfirmation } = require("../utils/emailService.js");
+const Booking = require("../models/Booking");
+const { auth } = require("../middleware/auth");
+const { sendBookingConfirmation, sendOrderConfirmation } = require("../utils/emailService");
 const { v4: uuidv4 } = require('uuid');
 
-const BookingRouter = express.Router();
+const router = express.Router();
 
 // GET /booking/my - Get bookings for the authenticated user
-BookingRouter.get("/my", auth, async (req, res) => {
+router.get("/my", auth, async (req, res) => {
   try {
     const email = (req.user?.email || "").toLowerCase();
     if (!email) {
-      return res.status(400).json({ message: "User email missing in token" });
-    }
-    const bookings = await BookingModel.find({
-      email: { $regex: new RegExp(`^${email}$`, "i") }
-    }).sort({ createdAt: -1 });
-
-    res.json({ bookings });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error fetching user bookings", error: err.message });
-  }
-});
-
-// GET /bookings - Get bookings by email and phone
-BookingRouter.get("/", async (req, res) => {
-  try {
-    const { email, phone } = req.query;
-    
-    if (!email || !phone) {
       return res.status(400).json({ 
-        message: "Email and phone number are required" 
+        success: false,
+        message: "User email missing in token"
       });
     }
 
-    const bookings = await BookingModel.find({ 
-      email: email.toLowerCase(),
-      phone: phone.trim()
+    const bookings = await Booking.find({
+      email: { $regex: new RegExp(`^${email}$`, "i") }
     }).sort({ createdAt: -1 });
 
-    res.json(bookings);
+    res.json({ 
+      success: true,
+      bookings 
+    });
   } catch (err) {
-    console.error(err);
+    console.error("Error fetching user bookings:", err);
     res.status(500).json({ 
-      message: "Error fetching bookings", 
-      error: err.message 
+      success: false,
+      message: "Error fetching user bookings", 
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
   }
 });
 
-// POST /booking
-BookingRouter.post("/", async (req, res) => {
+// GET /bookings - Get bookings by email and phone (public endpoint)
+router.get("/", async (req, res) => {
+  try {
+    const { email, phone } = req.query;
+    
+    if (!email && !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Email or phone number is required"
+      });
+    }
+
+    const query = {};
+    if (email) query.email = { $regex: new RegExp(`^${email}$`, "i") };
+    if (phone) query.phone = phone;
+
+    const bookings = await Booking.find(query).sort({ createdAt: -1 });
+    
+    res.json({
+      success: true,
+      bookings
+    });
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching bookings",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
+// POST /booking - Create a new booking
+router.post("/", auth, async (req, res) => {
   try {
     const { name, email, phone, date, items, totalAmount } = req.body;
 

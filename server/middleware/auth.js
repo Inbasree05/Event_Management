@@ -1,8 +1,8 @@
-import jwt from 'jsonwebtoken';
-import { UserModel } from '../models/User.js';
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
 // Middleware to verify admin role
-export const verifyAdmin = (req, res, next) => {
+const verifyAdmin = (req, res, next) => {
   console.log('=== Verify Admin Middleware ===');
   
   // First verify the user is authenticated
@@ -35,7 +35,7 @@ export const verifyAdmin = (req, res, next) => {
   });
 };
 
-export const auth = async (req, res, next) => {
+const auth = async (req, res, next) => {
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     console.log('Preflight request - allowing CORS');
@@ -56,7 +56,7 @@ export const auth = async (req, res, next) => {
   if (authHeader && typeof authHeader === 'string' && authHeader.toLowerCase().startsWith('bearer ')) {
     token = authHeader.slice(7).trim();
   }
-  token = token || req.header('x-auth-token') || req.cookies.token || req.query.token;
+  token = token || req.header('x-auth-token') || (req.cookies && req.cookies.token) || (req.query && req.query.token);
   
   // Check if no token
   if (!token) {
@@ -73,7 +73,7 @@ export const auth = async (req, res, next) => {
     const user = decoded.user || decoded; // Handle both formats
     
     // Update lastActive timestamp for the user
-    await UserModel.findByIdAndUpdate(user.id, { 
+    await User.findByIdAndUpdate(user.id, { 
       lastActive: new Date() 
     });
     
@@ -92,7 +92,7 @@ export const auth = async (req, res, next) => {
 };
 
 // Export all middleware
-export default { 
+module.exports = { 
   auth, 
   verifyAdmin 
 };
