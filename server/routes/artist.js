@@ -1,5 +1,5 @@
 const express = require('express');
-const { Artist } = require('../models/Artist');
+const Artist = require('../models/Artist');
 const { auth, verifyAdmin } = require('../middleware/auth');
 
 const router = express.Router();
