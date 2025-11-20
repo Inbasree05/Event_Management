@@ -40,14 +40,15 @@ const corsOptions = {
   origin: [
     'http://localhost:5173', 
     'http://127.0.0.1:5173',
-    // Add your deployed frontend URL here later
-    'https://*.vercel.app',
-    'https://event-management-pt7gfhifb-inbasrees-projects.vercel.app'
+    'https://event-management-9f3pfl3jy-inbasrees-projects.vercel.app',
+    'https://event-management-pt7gfhifb-inbasrees-projects.vercel.app',
+    'https://*.vercel.app'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token', 'X-Requested-With'],
-  exposedHeaders: ['Authorization', 'x-auth-token']
+  exposedHeaders: ['Authorization', 'x-auth-token'],
+  optionsSuccessStatus: 200
 };
 
 // Enable CORS pre-flight
