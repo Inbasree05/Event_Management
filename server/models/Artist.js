@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const artistSchema = new mongoose.Schema(
   {
@@ -79,4 +79,4 @@ artistSchema.index({
 
 const Artist = mongoose.model('Artist', artistSchema);
 
-export default Artist;
+module.exports = Artist;
