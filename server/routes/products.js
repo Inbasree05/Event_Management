@@ -1,8 +1,8 @@
-import express from 'express';
-import { ProductModel } from '../models/Product.js';
-import cors from 'cors';
+const express = require('express');
+const cors = require('cors');
+const { ProductModel } = require('../models/Product');
 
-export const ProductsRouter = express.Router();
+const router = express.Router();
 
 // CORS configuration for products route
 const corsOptions = {
@@ -20,11 +20,11 @@ const corsOptions = {
 };
 
 // Apply CORS to all product routes
-ProductsRouter.use(cors(corsOptions));
-ProductsRouter.options('*', cors(corsOptions));
+router.use(cors(corsOptions));
+router.options('*', cors(corsOptions));
 
 // Public endpoint: list products (optionally by category)
-ProductsRouter.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const { category } = req.query;
     const filter = {};
@@ -42,3 +42,5 @@ ProductsRouter.get('/', async (req, res) => {
     res.status(500).json({ status: false, message: 'Failed to fetch products' });
   }
 });
+
+module.exports = router;
