@@ -79,6 +79,23 @@ app.use('/products', productsRoutes);
 app.use('/auth', userRoutes);
 app.use('/booking', bookingRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'Server is running',
+    availableRoutes: {
+      products: '/api/products',
+      users: '/api/users',
+      bookings: '/api/bookings',
+      artists: '/api/artists',
+      reviews: '/api/reviews',
+      frontendProducts: '/products',
+      auth: '/auth',
+      booking: '/booking'
+    }
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
